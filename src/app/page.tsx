@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { logout } from "@/app/actions/auth";
@@ -52,6 +53,12 @@ export default async function Home() {
           <p className="mt-1 text-sm text-zinc-500">
             검색해도 안 나오는 그 집, 직접 기록해보세요
           </p>
+          <Link
+            href="/restaurants/new"
+            className="mt-6 inline-block rounded-xl bg-zinc-900 px-5 py-3 text-sm font-medium text-white"
+          >
+            첫 맛집 등록하기
+          </Link>
         </div>
       )}
 
@@ -80,6 +87,15 @@ export default async function Home() {
           </li>
         ))}
       </ul>
+
+      {totalCount > 0 && (
+        <Link
+          href="/restaurants/new"
+          className="mt-8 block rounded-xl bg-zinc-900 py-3 text-center text-sm font-medium text-white"
+        >
+          + 맛집 등록
+        </Link>
+      )}
     </main>
   );
 }
