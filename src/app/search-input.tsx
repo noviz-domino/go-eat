@@ -1,0 +1,45 @@
+"use client";
+
+import { useRouter, useSearchParams } from "next/navigation";
+import { useRef, useState } from "react";
+
+type Props = {
+  defaultValue: string;
+};
+
+export function SearchInput({ defaultValue }: Props) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [value, setValue] = useState(defaultValue);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function handleChange(next: string) {
+    setValue(next);
+
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
+
+    // 한 글자씩 입력할 때마다 서버에 요청하지 않도록 300ms 기다린다.
+    timer.current = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (next) {
+        params.set("q", next);
+      } else {
+        params.delete("q");
+      }
+      const qs = params.toString();
+      router.replace(qs ? `/?${qs}` : "/");
+    }, 300);
+  }
+
+  return (
+    <input
+      type="search"
+      value={value}
+      onChange={(e) => handleChange(e.target.value)}
+      placeholder="가게 이름 검색"
+      className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none focus:border-zinc-400"
+    />
+  );
+}

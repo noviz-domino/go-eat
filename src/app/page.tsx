@@ -2,9 +2,35 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { logout } from "@/app/actions/auth";
-import type { Restaurant } from "@/lib/types";
+import { CATEGORIES, type Restaurant } from "@/lib/types";
+import { SearchInput } from "./search-input";
+import { CategoryFilter } from "./category-filter";
 
-export default async function Home() {
+type VisitedFilter = "all" | "todo" | "done";
+
+type Props = {
+  searchParams: Promise<{
+    q?: string;
+    visited?: string;
+    category?: string;
+  }>;
+};
+
+// 검색어·방문탭은 유지한 채 하나의 값만 바꾼 링크를 만든다.
+function buildHref(
+  current: { q: string; visited: VisitedFilter; category: string },
+  override: Partial<typeof current>,
+) {
+  const merged = { ...current, ...override };
+  const params = new URLSearchParams();
+  if (merged.q) params.set("q", merged.q);
+  if (merged.visited !== "all") params.set("visited", merged.visited);
+  if (merged.category) params.set("category", merged.category);
+  const qs = params.toString();
+  return qs ? `/?${qs}` : "/";
+}
+
+export default async function Home({ searchParams }: Props) {
   const supabase = await createClient();
 
   const {
@@ -15,13 +41,42 @@ export default async function Home() {
     redirect("/login");
   }
 
-  const { data: restaurants, error } = await supabase
+  const sp = await searchParams;
+  const q = (sp.q ?? "").trim();
+  const visited: VisitedFilter =
+    sp.visited === "todo" || sp.visited === "done" ? sp.visited : "all";
+  const category = CATEGORIES.includes(
+    sp.category as (typeof CATEGORIES)[number],
+  )
+    ? sp.category!
+    : "";
+
+  const filters = { q, visited, category };
+
+  // 진행률 바는 필터와 무관하게 항상 "전체" 기준이어야 하므로 별도로 조회한다.
+  const { data: allRows } = await supabase.from("restaurants").select("visited");
+  const allCount = allRows?.length ?? 0;
+  const visitedAllCount = allRows?.filter((r) => r.visited).length ?? 0;
+
+  let query = supabase
     .from("restaurants")
     .select("*")
     .order("created_at", { ascending: false });
 
-  const visitedCount = restaurants?.filter((r) => r.visited).length ?? 0;
-  const totalCount = restaurants?.length ?? 0;
+  if (q) {
+    query = query.ilike("name", `%${q}%`);
+  }
+  if (visited === "todo") {
+    query = query.eq("visited", false);
+  } else if (visited === "done") {
+    query = query.eq("visited", true);
+  }
+  if (category) {
+    query = query.eq("category", category);
+  }
+
+  const { data: restaurants, error } = await query;
+  const filteredCount = restaurants?.length ?? 0;
 
   return (
     <main className="mx-auto max-w-2xl px-5 py-8">
@@ -34,9 +89,9 @@ export default async function Home() {
 
       <p className="mb-8 text-sm text-zinc-500">{user.email}</p>
 
-      {totalCount > 0 && (
+      {allCount > 0 && (
         <p className="mb-6 text-sm font-medium">
-          {totalCount}곳 중 {visitedCount}곳 정복
+          {allCount}곳 중 {visitedAllCount}곳 정복
         </p>
       )}
 
@@ -46,7 +101,7 @@ export default async function Home() {
         </p>
       )}
 
-      {totalCount === 0 && !error && (
+      {allCount === 0 && !error && (
         <div className="py-20 text-center">
           <p className="text-4xl">🍜</p>
           <p className="mt-4 font-medium">아직 등록한 맛집이 없어요</p>
@@ -58,6 +113,50 @@ export default async function Home() {
             className="mt-6 inline-block rounded-xl bg-zinc-900 px-5 py-3 text-sm font-medium text-white"
           >
             첫 맛집 등록하기
+          </Link>
+        </div>
+      )}
+
+      {allCount > 0 && (
+        <div className="mb-6 flex flex-col gap-3">
+          <SearchInput defaultValue={q} />
+
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex gap-2">
+              {(
+                [
+                  { key: "all", label: "전체" },
+                  { key: "todo", label: "가볼 곳" },
+                  { key: "done", label: "갔던 곳" },
+                ] as const
+              ).map((tab) => (
+                <Link
+                  key={tab.key}
+                  href={buildHref(filters, { visited: tab.key })}
+                  className={`rounded-full px-4 py-1.5 text-sm ${
+                    visited === tab.key
+                      ? "bg-zinc-900 text-white"
+                      : "border border-zinc-200 text-zinc-600"
+                  }`}
+                >
+                  {tab.label}
+                </Link>
+              ))}
+            </div>
+
+            <CategoryFilter defaultValue={category} />
+          </div>
+        </div>
+      )}
+
+      {allCount > 0 && filteredCount === 0 && !error && (
+        <div className="py-16 text-center">
+          <p className="text-sm text-zinc-500">조건에 맞는 맛집이 없어요</p>
+          <Link
+            href="/"
+            className="mt-4 inline-block rounded-xl border border-zinc-200 px-4 py-2 text-sm font-medium"
+          >
+            필터 초기화
           </Link>
         </div>
       )}
@@ -90,7 +189,7 @@ export default async function Home() {
         ))}
       </ul>
 
-      {totalCount > 0 && (
+      {allCount > 0 && (
         <Link
           href="/restaurants/new"
           className="mt-8 block rounded-xl bg-zinc-900 py-3 text-center text-sm font-medium text-white"
