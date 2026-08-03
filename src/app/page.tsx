@@ -25,7 +25,7 @@ export default async function Home() {
   return (
     <main className="mx-auto max-w-2xl px-5 py-8">
       <header className="mb-8 flex items-center justify-between">
-        <h1 className="text-xl font-bold">🍜 가서 먹어</h1>
+        <h1 className="text-xl font-bold">🍜 가봐야 알지</h1>
         <form action={logout}>
           <button className="text-sm text-zinc-500 underline">로그아웃</button>
         </form>
