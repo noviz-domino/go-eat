@@ -38,8 +38,8 @@ export default async function RestaurantDetailPage({ params }: Props) {
         ← 목록으로
       </Link>
 
-      <h1 className="mt-4 text-xl font-bold">{restaurant.name}</h1>
-      <p className="mt-1 text-sm text-zinc-500">{restaurant.category}</p>
+      <h1 className="mt-4 text-lg font-bold">{restaurant.name}</h1>
+      <p className="mt-1 text-[13px] text-zinc-500">{restaurant.category}</p>
 
       {restaurant.address && (
         <p className="mt-4 text-sm">📍 {restaurant.address}</p>

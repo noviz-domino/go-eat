@@ -90,9 +90,17 @@ export default async function Home({ searchParams }: Props) {
       <p className="mb-8 text-sm text-zinc-500">{user.email}</p>
 
       {allCount > 0 && (
-        <p className="mb-6 text-sm font-medium">
-          {allCount}곳 중 {visitedAllCount}곳 정복
-        </p>
+        <div className="mb-6">
+          <p className="text-sm font-medium">
+            {allCount}곳 중 {visitedAllCount}곳 정복
+          </p>
+          <div className="mt-2 h-2 rounded-full bg-zinc-100">
+            <div
+              className="h-full rounded-full bg-accent"
+              style={{ width: `${Math.round((visitedAllCount / allCount) * 100)}%` }}
+            />
+          </div>
+        </div>
       )}
 
       {error && (
@@ -110,7 +118,7 @@ export default async function Home({ searchParams }: Props) {
           </p>
           <Link
             href="/restaurants/new"
-            className="mt-6 inline-block rounded-xl bg-zinc-900 px-5 py-3 text-sm font-medium text-white"
+            className="mt-6 inline-block rounded-xl bg-accent px-5 py-3 text-sm font-medium text-white"
           >
             첫 맛집 등록하기
           </Link>
@@ -135,7 +143,7 @@ export default async function Home({ searchParams }: Props) {
                   href={buildHref(filters, { visited: tab.key })}
                   className={`rounded-full px-4 py-1.5 text-sm ${
                     visited === tab.key
-                      ? "bg-zinc-900 text-white"
+                      ? "bg-accent text-white"
                       : "border border-zinc-200 text-zinc-600"
                   }`}
                 >
@@ -166,13 +174,13 @@ export default async function Home({ searchParams }: Props) {
           <li key={restaurant.id}>
             <Link
               href={`/restaurants/${restaurant.id}`}
-              className="block rounded-2xl border border-zinc-100 p-4 shadow-sm"
+              className="block rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
             >
               <div className="flex items-baseline justify-between">
-                <strong className="text-lg font-semibold">
+                <strong className="text-lg font-bold">
                   {restaurant.name}
                 </strong>
-                <span className="text-sm text-zinc-500">
+                <span className="text-[13px] text-zinc-500">
                   {restaurant.category}
                 </span>
               </div>
@@ -182,7 +190,7 @@ export default async function Home({ searchParams }: Props) {
                   : "아직 안 가봄"}
               </p>
               {restaurant.memo && (
-                <p className="mt-2 text-sm text-zinc-500">{restaurant.memo}</p>
+                <p className="mt-2 text-[13px] text-zinc-500">{restaurant.memo}</p>
               )}
             </Link>
           </li>
@@ -192,7 +200,7 @@ export default async function Home({ searchParams }: Props) {
       {allCount > 0 && (
         <Link
           href="/restaurants/new"
-          className="mt-8 block rounded-xl bg-zinc-900 py-3 text-center text-sm font-medium text-white"
+          className="mt-8 block rounded-xl bg-accent py-3 text-center text-sm font-medium text-white"
         >
           + 맛집 등록
         </Link>

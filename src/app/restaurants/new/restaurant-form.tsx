@@ -119,7 +119,7 @@ export function NewRestaurantForm() {
         <button
           type="submit"
           disabled={pending || !name.trim()}
-          className="flex-1 rounded-xl bg-zinc-900 py-3 text-sm font-medium text-white disabled:opacity-50"
+          className="flex-1 rounded-xl bg-accent py-3 text-sm font-medium text-white disabled:opacity-50"
         >
           {pending ? "저장 중..." : "저장"}
         </button>

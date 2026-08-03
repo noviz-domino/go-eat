@@ -124,7 +124,7 @@ export function EditRestaurantForm({ restaurant }: Props) {
         <button
           type="submit"
           disabled={pending || !name.trim()}
-          className="flex-1 rounded-xl bg-zinc-900 py-3 text-sm font-medium text-white disabled:opacity-50"
+          className="flex-1 rounded-xl bg-accent py-3 text-sm font-medium text-white disabled:opacity-50"
         >
           {pending ? "수정 중..." : "수정 완료"}
         </button>

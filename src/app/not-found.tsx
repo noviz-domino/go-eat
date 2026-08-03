@@ -10,7 +10,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="mt-6 rounded-xl bg-zinc-900 px-5 py-3 text-sm font-medium text-white"
+        className="mt-6 rounded-xl bg-accent px-5 py-3 text-sm font-medium text-white"
       >
         목록으로
       </Link>

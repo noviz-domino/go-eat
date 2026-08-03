@@ -42,7 +42,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 rounded-xl bg-zinc-900 py-3 text-sm font-medium text-white disabled:opacity-50"
+        className="mt-2 rounded-xl bg-accent py-3 text-sm font-medium text-white disabled:opacity-50"
       >
         {pending ? "처리 중..." : mode === "login" ? "로그인" : "가입하기"}
       </button>

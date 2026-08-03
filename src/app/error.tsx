@@ -21,7 +21,7 @@ export default function Error({ error, unstable_retry }: Props) {
       </p>
       <button
         onClick={() => unstable_retry()}
-        className="mt-6 rounded-xl bg-zinc-900 px-5 py-3 text-sm font-medium text-white"
+        className="mt-6 rounded-xl bg-accent px-5 py-3 text-sm font-medium text-white"
       >
         다시 시도
       </button>
