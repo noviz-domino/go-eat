@@ -64,26 +64,28 @@ export default async function Home() {
 
       <ul className="flex flex-col gap-4">
         {restaurants?.map((restaurant: Restaurant) => (
-          <li
-            key={restaurant.id}
-            className="rounded-2xl border border-zinc-100 p-4 shadow-sm"
-          >
-            <div className="flex items-baseline justify-between">
-              <strong className="text-lg font-semibold">
-                {restaurant.name}
-              </strong>
-              <span className="text-sm text-zinc-500">
-                {restaurant.category}
-              </span>
-            </div>
-            <p className="mt-1 text-sm text-zinc-600">
-              {restaurant.visited
-                ? `${"★".repeat(restaurant.rating ?? 0)} · ${restaurant.visited_at ?? ""} 방문`
-                : "아직 안 가봄"}
-            </p>
-            {restaurant.memo && (
-              <p className="mt-2 text-sm text-zinc-500">{restaurant.memo}</p>
-            )}
+          <li key={restaurant.id}>
+            <Link
+              href={`/restaurants/${restaurant.id}`}
+              className="block rounded-2xl border border-zinc-100 p-4 shadow-sm"
+            >
+              <div className="flex items-baseline justify-between">
+                <strong className="text-lg font-semibold">
+                  {restaurant.name}
+                </strong>
+                <span className="text-sm text-zinc-500">
+                  {restaurant.category}
+                </span>
+              </div>
+              <p className="mt-1 text-sm text-zinc-600">
+                {restaurant.visited
+                  ? `${"★".repeat(restaurant.rating ?? 0)} · ${restaurant.visited_at ?? ""} 방문`
+                  : "아직 안 가봄"}
+              </p>
+              {restaurant.memo && (
+                <p className="mt-2 text-sm text-zinc-500">{restaurant.memo}</p>
+              )}
+            </Link>
           </li>
         ))}
       </ul>
