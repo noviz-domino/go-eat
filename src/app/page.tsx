@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -94,7 +95,13 @@ export default async function Home({ searchParams }: Props) {
 
         {allCount === 0 && !error && (
           <div className="rounded-2xl border border-[#EAEAEA] bg-white py-20 text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-            <p className="text-4xl">🍜</p>
+            <Image
+              src="/mascot-icon.png"
+              alt=""
+              width={96}
+              height={96}
+              className="mx-auto rounded-full"
+            />
             <p className="mt-4 font-medium">아직 등록한 맛집이 없어요</p>
             <p className="mt-1 text-sm text-zinc-500">
               검색해도 안 나오는 그 집, 직접 기록해보세요

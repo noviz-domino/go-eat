@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { LoginForm } from "./login-form";
@@ -13,11 +14,15 @@ export default async function LoginPage() {
   return (
     <main className="flex min-h-dvh items-center justify-center px-5">
       <div className="w-full max-w-sm">
-        <div className="mb-10 text-center">
-          <h1 className="text-2xl font-bold">🍜 가봐야 알지</h1>
-          <p className="mt-2 text-sm text-zinc-500">
-            시골 맛집은 가봐야 압니다
-          </p>
+        <div className="mb-6 text-center">
+          <Image
+            src="/logo-hero.png"
+            alt="가봐야 알지 - 맛있는 곳을 찾아 떠나요"
+            width={240}
+            height={240}
+            className="mx-auto"
+            priority
+          />
         </div>
 
         <LoginForm />

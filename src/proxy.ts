@@ -40,5 +40,8 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  // 정적 이미지 자산(퍼블릭 로고 등)은 로그인 여부와 상관없이 항상 내려줘야 하므로 제외한다.
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+  ],
 };

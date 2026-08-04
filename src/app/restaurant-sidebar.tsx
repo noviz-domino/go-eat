@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { logout } from "@/app/actions/auth";
 import { CategoryFilter } from "./category-filter";
@@ -51,8 +52,15 @@ export function RestaurantSidebar({
 
   const fullSidebar = (
     <>
-      <Link href="/" className="text-xl font-bold">
-        🍜 가봐야 알지
+      <Link href="/" className="flex items-center gap-2 text-xl font-bold">
+        <Image
+          src="/mascot-icon.png"
+          alt=""
+          width={32}
+          height={32}
+          className="rounded-full"
+        />
+        가봐야 알지
       </Link>
 
       {allCount > 0 && (
@@ -120,10 +128,16 @@ export function RestaurantSidebar({
     <>
       <Link
         href="/"
-        className="flex h-10 w-10 items-center justify-center self-center rounded-xl text-xl"
+        className="flex h-10 w-10 items-center justify-center self-center"
         aria-label="가봐야 알지"
       >
-        🍜
+        <Image
+          src="/mascot-icon.png"
+          alt=""
+          width={36}
+          height={36}
+          className="rounded-full"
+        />
       </Link>
 
       {allCount > 0 && (
