@@ -93,7 +93,7 @@ export default async function Home({ searchParams }: Props) {
         )}
 
         {allCount === 0 && !error && (
-          <div className="py-20 text-center">
+          <div className="rounded-2xl border border-[#EAEAEA] bg-white py-20 text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
             <p className="text-4xl">🍜</p>
             <p className="mt-4 font-medium">아직 등록한 맛집이 없어요</p>
             <p className="mt-1 text-sm text-zinc-500">
@@ -116,7 +116,7 @@ export default async function Home({ searchParams }: Props) {
         )}
 
         {allCount > 0 && filteredCount === 0 && !error && (
-          <div className="py-16 text-center">
+          <div className="rounded-2xl border border-[#EAEAEA] bg-white py-16 text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
             <p className="text-sm text-zinc-500">조건에 맞는 맛집이 없어요</p>
             <Link
               href="/"

@@ -48,9 +48,11 @@ export default async function EditRestaurantPage({ params }: Props) {
         <Link href={`/restaurants/${id}`} className="text-sm text-zinc-500">
           ← 취소
         </Link>
-        <h1 className="mt-4 mb-8 text-xl font-bold">맛집 수정</h1>
 
-        <EditRestaurantForm restaurant={restaurant} />
+        <div className="mt-4 rounded-2xl border border-[#EAEAEA] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <h1 className="mb-8 text-xl font-bold">맛집 수정</h1>
+          <EditRestaurantForm restaurant={restaurant} />
+        </div>
       </div>
     </RestaurantSidebar>
   );

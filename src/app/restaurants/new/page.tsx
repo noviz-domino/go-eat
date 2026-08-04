@@ -31,9 +31,11 @@ export default async function NewRestaurantPage() {
         <Link href="/" className="text-sm text-zinc-500">
           ← 취소
         </Link>
-        <h1 className="mt-4 mb-8 text-xl font-bold">맛집 등록</h1>
 
-        <NewRestaurantForm />
+        <div className="mt-4 rounded-2xl border border-[#EAEAEA] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <h1 className="mb-8 text-xl font-bold">맛집 등록</h1>
+          <NewRestaurantForm />
+        </div>
       </div>
     </RestaurantSidebar>
   );
