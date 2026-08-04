@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { logout } from "@/app/actions/auth";
-import { CATEGORIES, type Restaurant } from "@/lib/types";
+import { CATEGORIES, CATEGORY_ICONS, type Restaurant } from "@/lib/types";
 import { SearchInput } from "./search-input";
 import { CategoryFilter } from "./category-filter";
 
@@ -174,28 +174,33 @@ export default async function Home({ searchParams }: Props) {
           <li key={restaurant.id}>
             <Link
               href={`/restaurants/${restaurant.id}`}
-              className="block rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+              className="flex gap-3 rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
             >
-              <div className="flex items-baseline justify-between">
-                <strong className="text-lg font-bold">
-                  {restaurant.name}
-                </strong>
-                <span className="text-[13px] text-zinc-500">
-                  {restaurant.category}
-                </span>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-2xl">
+                {CATEGORY_ICONS[restaurant.category] ?? "🍽️"}
               </div>
-              <p className="mt-1 text-sm text-zinc-600">
-                {restaurant.visited
-                  ? `${"★".repeat(restaurant.rating ?? 0)} · ${restaurant.visited_at ?? ""} 방문`
-                  : "아직 안 가봄"}
-              </p>
-              {(restaurant.memo_summary || restaurant.memo) && (
-                <p className="mt-2 line-clamp-2 text-[13px] text-zinc-500">
-                  {restaurant.memo_summary ??
-                    // AI 요약이 아직 없는 예전 메모는 앞부분만 잘라서 보여준다.
-                    `${restaurant.memo!.slice(0, 40)}${restaurant.memo!.length > 40 ? "…" : ""}`}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline justify-between">
+                  <strong className="text-lg font-bold">
+                    {restaurant.name}
+                  </strong>
+                  <span className="text-[13px] text-zinc-500">
+                    {restaurant.category}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-zinc-600">
+                  {restaurant.visited
+                    ? `${"★".repeat(restaurant.rating ?? 0)} · ${restaurant.visited_at ?? ""} 방문`
+                    : "아직 안 가봄"}
                 </p>
-              )}
+                {(restaurant.memo_summary || restaurant.memo) && (
+                  <p className="mt-2 line-clamp-2 text-[13px] text-zinc-500">
+                    {restaurant.memo_summary ??
+                      // AI 요약이 아직 없는 예전 메모는 앞부분만 잘라서 보여준다.
+                      `${restaurant.memo!.slice(0, 40)}${restaurant.memo!.length > 40 ? "…" : ""}`}
+                  </p>
+                )}
+              </div>
             </Link>
           </li>
         ))}

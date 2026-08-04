@@ -20,3 +20,13 @@ export const CATEGORIES = [
   "카페·디저트",
   "기타",
 ] as const;
+
+// 사진을 안 쓰기로 한 기획 원칙 대신, 카드에 시각적 앵커를 주기 위한 카테고리별 이모지.
+export const CATEGORY_ICONS: Record<string, string> = {
+  한식: "🍚",
+  중식: "🥡",
+  일식: "🍣",
+  양식: "🍝",
+  "카페·디저트": "☕",
+  기타: "🍽️",
+};

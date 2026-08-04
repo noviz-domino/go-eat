@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { toggleVisited, deleteRestaurant } from "@/app/actions/restaurants";
+import { CATEGORY_ICONS } from "@/lib/types";
 import { DeleteButton } from "./delete-button";
 
 type Props = {
@@ -38,8 +39,15 @@ export default async function RestaurantDetailPage({ params }: Props) {
         ← 목록으로
       </Link>
 
-      <h1 className="mt-4 text-lg font-bold">{restaurant.name}</h1>
-      <p className="mt-1 text-[13px] text-zinc-500">{restaurant.category}</p>
+      <div className="mt-4 flex items-center gap-3">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-2xl">
+          {CATEGORY_ICONS[restaurant.category] ?? "🍽️"}
+        </div>
+        <div>
+          <h1 className="text-lg font-bold">{restaurant.name}</h1>
+          <p className="text-[13px] text-zinc-500">{restaurant.category}</p>
+        </div>
+      </div>
 
       {restaurant.address && (
         <p className="mt-4 text-sm">📍 {restaurant.address}</p>
