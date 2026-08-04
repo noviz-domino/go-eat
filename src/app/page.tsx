@@ -79,58 +79,38 @@ export default async function Home({ searchParams }: Props) {
   const filteredCount = restaurants?.length ?? 0;
 
   return (
-    <main className="mx-auto max-w-2xl px-5 py-8">
-      <header className="mb-8 flex items-center justify-between">
-        <h1 className="text-xl font-bold">🍜 가봐야 알지</h1>
-        <form action={logout}>
-          <button className="text-sm text-zinc-500 underline">로그아웃</button>
-        </form>
-      </header>
+    <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-8 md:flex-row md:items-start md:gap-10">
+      <aside className="flex w-full shrink-0 flex-col gap-6 md:sticky md:top-8 md:w-64">
+        <div className="flex items-center justify-between md:block">
+          <h1 className="text-xl font-bold">🍜 가봐야 알지</h1>
+          <form action={logout}>
+            <button className="text-sm text-zinc-500 underline">
+              로그아웃
+            </button>
+          </form>
+        </div>
 
-      <p className="mb-8 text-sm text-zinc-500">{user.email}</p>
+        <p className="text-sm text-zinc-500">{user.email}</p>
 
-      {allCount > 0 && (
-        <div className="mb-6">
-          <p className="text-sm font-medium">
-            {allCount}곳 중 {visitedAllCount}곳 정복
-          </p>
-          <div className="mt-2 h-2 rounded-full bg-zinc-100">
-            <div
-              className="h-full rounded-full bg-accent"
-              style={{ width: `${Math.round((visitedAllCount / allCount) * 100)}%` }}
-            />
+        {allCount > 0 && (
+          <div>
+            <p className="text-sm font-medium">
+              {allCount}곳 중 {visitedAllCount}곳 정복
+            </p>
+            <div className="mt-2 h-2 rounded-full bg-zinc-100">
+              <div
+                className="h-full rounded-full bg-accent"
+                style={{
+                  width: `${Math.round((visitedAllCount / allCount) * 100)}%`,
+                }}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {error && (
-        <p className="text-sm text-red-600">
-          맛집 목록을 불러오지 못했습니다: {error.message}
-        </p>
-      )}
-
-      {allCount === 0 && !error && (
-        <div className="py-20 text-center">
-          <p className="text-4xl">🍜</p>
-          <p className="mt-4 font-medium">아직 등록한 맛집이 없어요</p>
-          <p className="mt-1 text-sm text-zinc-500">
-            검색해도 안 나오는 그 집, 직접 기록해보세요
-          </p>
-          <Link
-            href="/restaurants/new"
-            className="mt-6 inline-block rounded-xl bg-accent px-5 py-3 text-sm font-medium text-white"
-          >
-            첫 맛집 등록하기
-          </Link>
-        </div>
-      )}
-
-      {allCount > 0 && (
-        <div className="mb-6 flex flex-col gap-3">
-          <SearchInput defaultValue={q} />
-
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex gap-2">
+        {allCount > 0 && (
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
               {(
                 [
                   { key: "all", label: "전체" },
@@ -141,10 +121,10 @@ export default async function Home({ searchParams }: Props) {
                 <Link
                   key={tab.key}
                   href={buildHref(filters, { visited: tab.key })}
-                  className={`rounded-full px-4 py-1.5 text-sm ${
+                  className={`rounded-xl px-4 py-2 text-sm font-medium ${
                     visited === tab.key
                       ? "bg-accent text-white"
-                      : "border border-zinc-200 text-zinc-600"
+                      : "text-zinc-600 hover:bg-zinc-100"
                   }`}
                 >
                   {tab.label}
@@ -154,66 +134,96 @@ export default async function Home({ searchParams }: Props) {
 
             <CategoryFilter defaultValue={category} />
           </div>
-        </div>
-      )}
+        )}
 
-      {allCount > 0 && filteredCount === 0 && !error && (
-        <div className="py-16 text-center">
-          <p className="text-sm text-zinc-500">조건에 맞는 맛집이 없어요</p>
+        {allCount > 0 && (
           <Link
-            href="/"
-            className="mt-4 inline-block rounded-xl border border-zinc-200 px-4 py-2 text-sm font-medium"
+            href="/restaurants/new"
+            className="block rounded-xl bg-accent py-3 text-center text-sm font-medium text-white"
           >
-            필터 초기화
+            + 맛집 등록
           </Link>
-        </div>
-      )}
+        )}
+      </aside>
 
-      <ul className="flex flex-col gap-4">
-        {restaurants?.map((restaurant: Restaurant) => (
-          <li key={restaurant.id}>
+      <main className="min-w-0 flex-1">
+        {error && (
+          <p className="text-sm text-red-600">
+            맛집 목록을 불러오지 못했습니다: {error.message}
+          </p>
+        )}
+
+        {allCount === 0 && !error && (
+          <div className="py-20 text-center">
+            <p className="text-4xl">🍜</p>
+            <p className="mt-4 font-medium">아직 등록한 맛집이 없어요</p>
+            <p className="mt-1 text-sm text-zinc-500">
+              검색해도 안 나오는 그 집, 직접 기록해보세요
+            </p>
             <Link
-              href={`/restaurants/${restaurant.id}`}
-              className="flex gap-3 rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+              href="/restaurants/new"
+              className="mt-6 inline-block rounded-xl bg-accent px-5 py-3 text-sm font-medium text-white"
             >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-2xl">
-                {CATEGORY_ICONS[restaurant.category] ?? "🍽️"}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-baseline justify-between">
-                  <strong className="text-lg font-bold">
-                    {restaurant.name}
-                  </strong>
-                  <span className="text-[13px] text-zinc-500">
-                    {restaurant.category}
-                  </span>
-                </div>
-                <p className="mt-1 text-sm text-zinc-600">
-                  {restaurant.visited
-                    ? `${"★".repeat(restaurant.rating ?? 0)} · ${restaurant.visited_at ?? ""} 방문`
-                    : "아직 안 가봄"}
-                </p>
-                {(restaurant.memo_summary || restaurant.memo) && (
-                  <p className="mt-2 line-clamp-2 text-[13px] text-zinc-500">
-                    {restaurant.memo_summary ??
-                      // AI 요약이 아직 없는 예전 메모는 앞부분만 잘라서 보여준다.
-                      `${restaurant.memo!.slice(0, 40)}${restaurant.memo!.length > 40 ? "…" : ""}`}
-                  </p>
-                )}
-              </div>
+              첫 맛집 등록하기
             </Link>
-          </li>
-        ))}
-      </ul>
+          </div>
+        )}
 
-      {allCount > 0 && (
-        <Link
-          href="/restaurants/new"
-          className="mt-8 block rounded-xl bg-accent py-3 text-center text-sm font-medium text-white"
-        >
-          + 맛집 등록
-        </Link>
-      )}
-    </main>
+        {allCount > 0 && (
+          <div className="mb-6">
+            <SearchInput defaultValue={q} />
+          </div>
+        )}
+
+        {allCount > 0 && filteredCount === 0 && !error && (
+          <div className="py-16 text-center">
+            <p className="text-sm text-zinc-500">조건에 맞는 맛집이 없어요</p>
+            <Link
+              href="/"
+              className="mt-4 inline-block rounded-xl border border-zinc-200 px-4 py-2 text-sm font-medium"
+            >
+              필터 초기화
+            </Link>
+          </div>
+        )}
+
+        <ul className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4">
+          {restaurants?.map((restaurant: Restaurant) => (
+            <li key={restaurant.id}>
+              <Link
+                href={`/restaurants/${restaurant.id}`}
+                className="flex h-full gap-3 rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+              >
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-2xl">
+                  {CATEGORY_ICONS[restaurant.category] ?? "🍽️"}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <strong className="text-lg font-bold">
+                      {restaurant.name}
+                    </strong>
+                    <span className="shrink-0 text-[13px] text-zinc-500">
+                      {restaurant.category}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-sm text-zinc-600">
+                    {restaurant.visited
+                      ? `${"★".repeat(restaurant.rating ?? 0)} · ${restaurant.visited_at ?? ""} 방문`
+                      : "아직 안 가봄"}
+                  </p>
+                  {(restaurant.memo_summary || restaurant.memo) && (
+                    <p className="mt-2 line-clamp-2 text-[13px] text-zinc-500">
+                      {restaurant.memo_summary ??
+                        // AI 요약이 아직 없는 예전 메모는 앞부분만 잘라서 보여준다.
+                        `${restaurant.memo!.slice(0, 40)}${restaurant.memo!.length > 40 ? "…" : ""}`}
+                    </p>
+                  )}
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </main>
+    </div>
   );
 }
