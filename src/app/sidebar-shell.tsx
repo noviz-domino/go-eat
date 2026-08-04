@@ -23,7 +23,7 @@ export function SidebarShell({ full, collapsed, children }: Props) {
         <button
           type="button"
           onClick={() => setIsCollapsed((v) => !v)}
-          className="mb-4 hidden h-8 w-8 items-center justify-center self-end rounded-full text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 md:flex"
+          className="mb-4 hidden h-8 w-8 items-center justify-center self-end rounded-full border border-zinc-200 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-600 md:flex"
           aria-label={isCollapsed ? "사이드바 펼치기" : "사이드바 접기"}
         >
           {isCollapsed ? "›" : "‹"}
