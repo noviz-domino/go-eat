@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { RestaurantSidebar } from "@/app/restaurant-sidebar";
 import { NewRestaurantForm } from "./restaurant-form";
 
 export default async function NewRestaurantPage() {
@@ -13,14 +14,27 @@ export default async function NewRestaurantPage() {
     redirect("/login");
   }
 
-  return (
-    <main className="mx-auto max-w-lg px-5 py-8">
-      <Link href="/" className="text-sm text-zinc-500">
-        ← 취소
-      </Link>
-      <h1 className="mt-4 mb-8 text-xl font-bold">맛집 등록</h1>
+  const { data: allRows } = await supabase.from("restaurants").select("visited");
+  const allCount = allRows?.length ?? 0;
+  const visitedAllCount = allRows?.filter((r) => r.visited).length ?? 0;
 
-      <NewRestaurantForm />
-    </main>
+  return (
+    <RestaurantSidebar
+      email={user.email ?? null}
+      allCount={allCount}
+      visitedAllCount={visitedAllCount}
+      activeVisited="all"
+      activeCategory=""
+      activeQuery=""
+    >
+      <div className="mx-auto max-w-lg">
+        <Link href="/" className="text-sm text-zinc-500">
+          ← 취소
+        </Link>
+        <h1 className="mt-4 mb-8 text-xl font-bold">맛집 등록</h1>
+
+        <NewRestaurantForm />
+      </div>
+    </RestaurantSidebar>
   );
 }
