@@ -5,6 +5,13 @@ import { logout } from "@/app/actions/auth";
 import { CATEGORIES, CATEGORY_ICONS, type Restaurant } from "@/lib/types";
 import { SearchInput } from "./search-input";
 import { CategoryFilter } from "./category-filter";
+import { SidebarShell } from "./sidebar-shell";
+
+const VISITED_TABS = [
+  { key: "all", label: "전체", icon: "📋" },
+  { key: "todo", label: "가볼 곳", icon: "📍" },
+  { key: "done", label: "갔던 곳", icon: "✅" },
+] as const;
 
 type VisitedFilter = "all" | "todo" | "done";
 
@@ -78,75 +85,112 @@ export default async function Home({ searchParams }: Props) {
   const { data: restaurants, error } = await query;
   const filteredCount = restaurants?.length ?? 0;
 
-  return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-8 md:flex-row md:items-start md:gap-10">
-      <aside className="flex w-full shrink-0 flex-col gap-6 md:sticky md:top-8 md:w-64">
-        <div className="flex items-center justify-between md:block">
-          <h1 className="text-xl font-bold">🍜 가봐야 알지</h1>
-          <form action={logout}>
-            <button className="text-sm text-zinc-500 underline">
-              로그아웃
-            </button>
-          </form>
+  const fullSidebar = (
+    <>
+      <div className="flex items-center justify-between md:block">
+        <h1 className="text-xl font-bold">🍜 가봐야 알지</h1>
+        <form action={logout}>
+          <button className="text-sm text-zinc-500 underline">
+            로그아웃
+          </button>
+        </form>
+      </div>
+
+      <p className="text-sm text-zinc-500">{user.email}</p>
+
+      {allCount > 0 && (
+        <div>
+          <p className="text-sm font-medium">
+            {allCount}곳 중 {visitedAllCount}곳 정복
+          </p>
+          <div className="mt-2 h-2 rounded-full bg-zinc-100">
+            <div
+              className="h-full rounded-full bg-accent"
+              style={{
+                width: `${Math.round((visitedAllCount / allCount) * 100)}%`,
+              }}
+            />
+          </div>
         </div>
+      )}
 
-        <p className="text-sm text-zinc-500">{user.email}</p>
-
-        {allCount > 0 && (
-          <div>
-            <p className="text-sm font-medium">
-              {allCount}곳 중 {visitedAllCount}곳 정복
-            </p>
-            <div className="mt-2 h-2 rounded-full bg-zinc-100">
-              <div
-                className="h-full rounded-full bg-accent"
-                style={{
-                  width: `${Math.round((visitedAllCount / allCount) * 100)}%`,
-                }}
-              />
-            </div>
+      {allCount > 0 && (
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            {VISITED_TABS.map((tab) => (
+              <Link
+                key={tab.key}
+                href={buildHref(filters, { visited: tab.key })}
+                className={`rounded-xl px-4 py-2 text-sm font-medium ${
+                  visited === tab.key
+                    ? "bg-accent text-white"
+                    : "text-zinc-600 hover:bg-zinc-100"
+                }`}
+              >
+                {tab.label}
+              </Link>
+            ))}
           </div>
-        )}
 
-        {allCount > 0 && (
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-              {(
-                [
-                  { key: "all", label: "전체" },
-                  { key: "todo", label: "가볼 곳" },
-                  { key: "done", label: "갔던 곳" },
-                ] as const
-              ).map((tab) => (
-                <Link
-                  key={tab.key}
-                  href={buildHref(filters, { visited: tab.key })}
-                  className={`rounded-xl px-4 py-2 text-sm font-medium ${
-                    visited === tab.key
-                      ? "bg-accent text-white"
-                      : "text-zinc-600 hover:bg-zinc-100"
-                  }`}
-                >
-                  {tab.label}
-                </Link>
-              ))}
-            </div>
+          <CategoryFilter defaultValue={category} />
+        </div>
+      )}
 
-            <CategoryFilter defaultValue={category} />
-          </div>
-        )}
+      {allCount > 0 && (
+        <Link
+          href="/restaurants/new"
+          className="block rounded-xl bg-accent py-3 text-center text-sm font-medium text-white"
+        >
+          + 맛집 등록
+        </Link>
+      )}
+    </>
+  );
 
-        {allCount > 0 && (
-          <Link
-            href="/restaurants/new"
-            className="block rounded-xl bg-accent py-3 text-center text-sm font-medium text-white"
-          >
-            + 맛집 등록
-          </Link>
-        )}
-      </aside>
+  const collapsedSidebar = (
+    <>
+      <Link
+        href="/"
+        className="flex h-10 w-10 items-center justify-center self-center rounded-xl text-xl"
+        aria-label="가봐야 알지"
+      >
+        🍜
+      </Link>
 
-      <main className="min-w-0 flex-1">
+      {allCount > 0 && (
+        <div className="flex flex-col items-center gap-2">
+          {VISITED_TABS.map((tab) => (
+            <Link
+              key={tab.key}
+              href={buildHref(filters, { visited: tab.key })}
+              title={tab.label}
+              aria-label={tab.label}
+              className={`flex h-10 w-10 items-center justify-center rounded-xl text-lg ${
+                visited === tab.key ? "bg-accent text-white" : "hover:bg-zinc-100"
+              }`}
+            >
+              {tab.icon}
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {allCount > 0 && (
+        <Link
+          href="/restaurants/new"
+          title="맛집 등록"
+          aria-label="맛집 등록"
+          className="flex h-10 w-10 items-center justify-center self-center rounded-xl bg-accent text-xl font-medium text-white"
+        >
+          +
+        </Link>
+      )}
+    </>
+  );
+
+  return (
+    <SidebarShell full={fullSidebar} collapsed={collapsedSidebar}>
+      <>
         {error && (
           <p className="text-sm text-red-600">
             맛집 목록을 불러오지 못했습니다: {error.message}
@@ -187,17 +231,26 @@ export default async function Home({ searchParams }: Props) {
           </div>
         )}
 
-        <ul className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4">
+        <ul className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-x-4 gap-y-6">
           {restaurants?.map((restaurant: Restaurant) => (
             <li key={restaurant.id}>
               <Link
                 href={`/restaurants/${restaurant.id}`}
-                className="flex h-full gap-3 rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+                className="block overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-2xl">
-                  {CATEGORY_ICONS[restaurant.category] ?? "🍽️"}
-                </div>
-                <div className="min-w-0 flex-1">
+                {restaurant.photo_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={restaurant.photo_url}
+                    alt={restaurant.name}
+                    className="aspect-square w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex aspect-square w-full items-center justify-center bg-orange-50 text-5xl">
+                    {CATEGORY_ICONS[restaurant.category] ?? "🍽️"}
+                  </div>
+                )}
+                <div className="p-4">
                   <div className="flex items-baseline justify-between gap-2">
                     <strong className="text-lg font-bold">
                       {restaurant.name}
@@ -223,7 +276,7 @@ export default async function Home({ searchParams }: Props) {
             </li>
           ))}
         </ul>
-      </main>
-    </div>
+      </>
+    </SidebarShell>
   );
 }

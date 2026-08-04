@@ -70,6 +70,27 @@ export function EditRestaurantForm({ restaurant }: Props) {
         />
       </label>
 
+      <label className="flex flex-col gap-1.5">
+        <span className="text-sm font-medium">대표 사진</span>
+        {restaurant.photo_url && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={restaurant.photo_url}
+            alt={restaurant.name}
+            className="h-32 w-32 rounded-xl object-cover"
+          />
+        )}
+        <input
+          type="file"
+          name="photo"
+          accept="image/*"
+          className="text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-zinc-100 file:px-3 file:py-2 file:text-sm"
+        />
+        <span className="text-xs text-zinc-400">
+          새 사진을 선택하지 않으면 기존 사진이 그대로 유지됩니다.
+        </span>
+      </label>
+
       <div className="flex flex-col gap-3 rounded-xl bg-zinc-50 p-4">
         <label className="flex items-center gap-2">
           <input

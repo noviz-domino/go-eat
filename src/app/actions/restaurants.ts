@@ -1,12 +1,50 @@
 "use server";
 
+import { randomUUID } from "crypto";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { parseRestaurantForm } from "@/lib/restaurant-form";
 import { summarizeMemo } from "@/app/actions/ai";
 
 export type RestaurantFormState = { error?: string };
+
+const MAX_PHOTO_SIZE = 5 * 1024 * 1024;
+
+// 사진이 있으면 Supabase Storage에 올리고 공개 URL을 돌려준다.
+// 사진이 없으면(용량 0) null을 돌려주고, 실패해도 예외 대신 error 메시지로만 알린다.
+async function uploadRestaurantPhoto(
+  supabase: SupabaseClient,
+  userId: string,
+  file: FormDataEntryValue | null,
+): Promise<{ url: string | null; error?: string }> {
+  if (!(file instanceof File) || file.size === 0) {
+    return { url: null };
+  }
+
+  if (file.size > MAX_PHOTO_SIZE) {
+    return { url: null, error: "사진은 5MB 이하만 업로드할 수 있어요." };
+  }
+
+  if (!file.type.startsWith("image/")) {
+    return { url: null, error: "이미지 파일만 업로드할 수 있어요." };
+  }
+
+  const ext = file.name.includes(".") ? file.name.split(".").pop() : "jpg";
+  const path = `${userId}/${randomUUID()}.${ext}`;
+
+  const { error } = await supabase.storage
+    .from("restaurant-photos")
+    .upload(path, file, { contentType: file.type });
+
+  if (error) {
+    return { url: null, error: `사진 업로드에 실패했습니다: ${error.message}` };
+  }
+
+  const { data } = supabase.storage.from("restaurant-photos").getPublicUrl(path);
+  return { url: data.publicUrl };
+}
 
 export async function createRestaurant(
   _prev: RestaurantFormState,
@@ -35,6 +73,16 @@ export async function createRestaurant(
     ? await summarizeMemo(parsed.value.memo)
     : null;
 
+  const photo = await uploadRestaurantPhoto(
+    supabase,
+    user.id,
+    formData.get("photo"),
+  );
+
+  if (photo.error) {
+    return { error: photo.error };
+  }
+
   const { error } = await supabase.from("restaurants").insert({
     name: parsed.value.name,
     category: parsed.value.category,
@@ -44,6 +92,7 @@ export async function createRestaurant(
     visited: parsed.value.visited,
     visited_at: parsed.value.visitedAt,
     rating: parsed.value.rating,
+    photo_url: photo.url,
     // 클라이언트가 보낸 값을 쓰지 않고 서버가 확인한 사용자 id를 넣는다.
     user_id: user.id,
   });
@@ -87,6 +136,16 @@ export async function updateRestaurant(
     ? await summarizeMemo(parsed.value.memo)
     : null;
 
+  const photo = await uploadRestaurantPhoto(
+    supabase,
+    user.id,
+    formData.get("photo"),
+  );
+
+  if (photo.error) {
+    return { error: photo.error };
+  }
+
   // user_id는 애초에 수정 대상에 없다. RLS가 이 id의 소유자가 아니면 0행을 갱신한다.
   const { error } = await supabase
     .from("restaurants")
@@ -99,6 +158,8 @@ export async function updateRestaurant(
       visited: parsed.value.visited,
       visited_at: parsed.value.visitedAt,
       rating: parsed.value.rating,
+      // 새 사진을 올리지 않았으면 기존 사진을 그대로 둔다.
+      ...(photo.url ? { photo_url: photo.url } : {}),
     })
     .eq("id", id);
 

@@ -39,14 +39,22 @@ export default async function RestaurantDetailPage({ params }: Props) {
         ← 목록으로
       </Link>
 
-      <div className="mt-4 flex items-center gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-2xl">
+      {restaurant.photo_url ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={restaurant.photo_url}
+          alt={restaurant.name}
+          className="mt-4 aspect-[4/3] w-full rounded-2xl object-cover"
+        />
+      ) : (
+        <div className="mt-4 flex aspect-[4/3] w-full items-center justify-center rounded-2xl bg-orange-50 text-6xl">
           {CATEGORY_ICONS[restaurant.category] ?? "🍽️"}
         </div>
-        <div>
-          <h1 className="text-lg font-bold">{restaurant.name}</h1>
-          <p className="text-[13px] text-zinc-500">{restaurant.category}</p>
-        </div>
+      )}
+
+      <div className="mt-4">
+        <h1 className="text-lg font-bold">{restaurant.name}</h1>
+        <p className="text-[13px] text-zinc-500">{restaurant.category}</p>
       </div>
 
       {restaurant.address && (

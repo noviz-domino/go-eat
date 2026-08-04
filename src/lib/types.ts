@@ -8,6 +8,7 @@ export type Restaurant = {
   visited_at: string | null;
   memo: string | null;
   memo_summary: string | null;
+  photo_url: string | null;
   user_id: string;
   created_at: string;
 };

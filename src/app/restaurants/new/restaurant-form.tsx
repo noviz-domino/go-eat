@@ -63,6 +63,16 @@ export function NewRestaurantForm() {
         />
       </label>
 
+      <label className="flex flex-col gap-1.5">
+        <span className="text-sm font-medium">대표 사진</span>
+        <input
+          type="file"
+          name="photo"
+          accept="image/*"
+          className="text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-zinc-100 file:px-3 file:py-2 file:text-sm"
+        />
+      </label>
+
       <div className="flex flex-col gap-3 rounded-xl bg-zinc-50 p-4">
         <label className="flex items-center gap-2">
           <input
