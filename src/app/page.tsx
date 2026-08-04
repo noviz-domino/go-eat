@@ -1,19 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { logout } from "@/app/actions/auth";
 import { CATEGORIES, CATEGORY_ICONS, type Restaurant } from "@/lib/types";
 import { SearchInput } from "./search-input";
-import { CategoryFilter } from "./category-filter";
-import { SidebarShell } from "./sidebar-shell";
-
-const VISITED_TABS = [
-  { key: "all", label: "전체", icon: "📋" },
-  { key: "todo", label: "가볼 곳", icon: "📍" },
-  { key: "done", label: "갔던 곳", icon: "✅" },
-] as const;
-
-type VisitedFilter = "all" | "todo" | "done";
+import { RestaurantSidebar, type VisitedFilter } from "./restaurant-sidebar";
 
 type Props = {
   searchParams: Promise<{
@@ -22,20 +12,6 @@ type Props = {
     category?: string;
   }>;
 };
-
-// 검색어·방문탭은 유지한 채 하나의 값만 바꾼 링크를 만든다.
-function buildHref(
-  current: { q: string; visited: VisitedFilter; category: string },
-  override: Partial<typeof current>,
-) {
-  const merged = { ...current, ...override };
-  const params = new URLSearchParams();
-  if (merged.q) params.set("q", merged.q);
-  if (merged.visited !== "all") params.set("visited", merged.visited);
-  if (merged.category) params.set("category", merged.category);
-  const qs = params.toString();
-  return qs ? `/?${qs}` : "/";
-}
 
 export default async function Home({ searchParams }: Props) {
   const supabase = await createClient();
@@ -57,8 +33,6 @@ export default async function Home({ searchParams }: Props) {
   )
     ? sp.category!
     : "";
-
-  const filters = { q, visited, category };
 
   // 진행률 바는 필터와 무관하게 항상 "전체" 기준이어야 하므로 별도로 조회한다.
   const { data: allRows } = await supabase.from("restaurants").select("visited");
@@ -84,131 +58,16 @@ export default async function Home({ searchParams }: Props) {
 
   const { data: restaurants, error } = await query;
   const filteredCount = restaurants?.length ?? 0;
-  const emailInitial = user.email?.[0]?.toUpperCase() ?? "?";
-
-  const fullSidebar = (
-    <>
-      <Link href="/" className="text-xl font-bold">
-        🍜 가봐야 알지
-      </Link>
-
-      {allCount > 0 && (
-        <div>
-          <p className="text-sm font-medium">
-            {allCount}곳 중 {visitedAllCount}곳 정복
-          </p>
-          <div className="mt-2 h-2 rounded-full bg-zinc-100">
-            <div
-              className="h-full rounded-full bg-accent"
-              style={{
-                width: `${Math.round((visitedAllCount / allCount) * 100)}%`,
-              }}
-            />
-          </div>
-        </div>
-      )}
-
-      {allCount > 0 && (
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            {VISITED_TABS.map((tab) => (
-              <Link
-                key={tab.key}
-                href={buildHref(filters, { visited: tab.key })}
-                className={`rounded-xl px-4 py-2 text-sm font-medium ${
-                  visited === tab.key
-                    ? "bg-accent text-white"
-                    : "text-zinc-600 hover:bg-zinc-100"
-                }`}
-              >
-                {tab.label}
-              </Link>
-            ))}
-          </div>
-
-          <CategoryFilter defaultValue={category} />
-        </div>
-      )}
-
-      <div className="mt-auto flex flex-col gap-4 border-t border-zinc-100 pt-4">
-        {allCount > 0 && (
-          <Link
-            href="/restaurants/new"
-            className="block rounded-xl bg-accent py-3 text-center text-sm font-medium text-white"
-          >
-            + 맛집 등록
-          </Link>
-        )}
-
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex min-w-0 items-center gap-2">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/10 text-sm font-semibold text-accent">
-              {emailInitial}
-            </div>
-            <p className="truncate text-sm text-zinc-500">{user.email}</p>
-          </div>
-          <form action={logout}>
-            <button className="shrink-0 text-sm text-zinc-500 underline">
-              로그아웃
-            </button>
-          </form>
-        </div>
-      </div>
-    </>
-  );
-
-  const collapsedSidebar = (
-    <>
-      <Link
-        href="/"
-        className="flex h-10 w-10 items-center justify-center self-center rounded-xl text-xl"
-        aria-label="가봐야 알지"
-      >
-        🍜
-      </Link>
-
-      {allCount > 0 && (
-        <div className="flex flex-col items-center gap-2">
-          {VISITED_TABS.map((tab) => (
-            <Link
-              key={tab.key}
-              href={buildHref(filters, { visited: tab.key })}
-              title={tab.label}
-              aria-label={tab.label}
-              className={`flex h-10 w-10 items-center justify-center rounded-xl text-lg ${
-                visited === tab.key ? "bg-accent text-white" : "hover:bg-zinc-100"
-              }`}
-            >
-              {tab.icon}
-            </Link>
-          ))}
-        </div>
-      )}
-
-      <div className="mt-auto flex flex-col items-center gap-3 border-t border-zinc-100 pt-4">
-        {allCount > 0 && (
-          <Link
-            href="/restaurants/new"
-            title="맛집 등록"
-            aria-label="맛집 등록"
-            className="flex h-10 w-10 items-center justify-center self-center rounded-xl bg-accent text-xl font-medium text-white"
-          >
-            +
-          </Link>
-        )}
-
-        <div
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/10 text-sm font-semibold text-accent"
-          title={user.email}
-        >
-          {emailInitial}
-        </div>
-      </div>
-    </>
-  );
 
   return (
-    <SidebarShell full={fullSidebar} collapsed={collapsedSidebar}>
+    <RestaurantSidebar
+      email={user.email ?? null}
+      allCount={allCount}
+      visitedAllCount={visitedAllCount}
+      activeVisited={visited}
+      activeCategory={category}
+      activeQuery={q}
+    >
       <>
         {error && (
           <p className="text-sm text-red-600">
@@ -296,6 +155,6 @@ export default async function Home({ searchParams }: Props) {
           ))}
         </ul>
       </>
-    </SidebarShell>
+    </RestaurantSidebar>
   );
 }
