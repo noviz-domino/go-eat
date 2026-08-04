@@ -84,19 +84,13 @@ export default async function Home({ searchParams }: Props) {
 
   const { data: restaurants, error } = await query;
   const filteredCount = restaurants?.length ?? 0;
+  const emailInitial = user.email?.[0]?.toUpperCase() ?? "?";
 
   const fullSidebar = (
     <>
-      <div className="flex items-center justify-between md:block">
-        <h1 className="text-xl font-bold">🍜 가봐야 알지</h1>
-        <form action={logout}>
-          <button className="text-sm text-zinc-500 underline">
-            로그아웃
-          </button>
-        </form>
-      </div>
-
-      <p className="text-sm text-zinc-500">{user.email}</p>
+      <Link href="/" className="text-xl font-bold">
+        🍜 가봐야 알지
+      </Link>
 
       {allCount > 0 && (
         <div>
@@ -136,14 +130,30 @@ export default async function Home({ searchParams }: Props) {
         </div>
       )}
 
-      {allCount > 0 && (
-        <Link
-          href="/restaurants/new"
-          className="block rounded-xl bg-accent py-3 text-center text-sm font-medium text-white"
-        >
-          + 맛집 등록
-        </Link>
-      )}
+      <div className="mt-auto flex flex-col gap-4 border-t border-zinc-100 pt-4">
+        {allCount > 0 && (
+          <Link
+            href="/restaurants/new"
+            className="block rounded-xl bg-accent py-3 text-center text-sm font-medium text-white"
+          >
+            + 맛집 등록
+          </Link>
+        )}
+
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center gap-2">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/10 text-sm font-semibold text-accent">
+              {emailInitial}
+            </div>
+            <p className="truncate text-sm text-zinc-500">{user.email}</p>
+          </div>
+          <form action={logout}>
+            <button className="shrink-0 text-sm text-zinc-500 underline">
+              로그아웃
+            </button>
+          </form>
+        </div>
+      </div>
     </>
   );
 
@@ -175,16 +185,25 @@ export default async function Home({ searchParams }: Props) {
         </div>
       )}
 
-      {allCount > 0 && (
-        <Link
-          href="/restaurants/new"
-          title="맛집 등록"
-          aria-label="맛집 등록"
-          className="flex h-10 w-10 items-center justify-center self-center rounded-xl bg-accent text-xl font-medium text-white"
+      <div className="mt-auto flex flex-col items-center gap-3 border-t border-zinc-100 pt-4">
+        {allCount > 0 && (
+          <Link
+            href="/restaurants/new"
+            title="맛집 등록"
+            aria-label="맛집 등록"
+            className="flex h-10 w-10 items-center justify-center self-center rounded-xl bg-accent text-xl font-medium text-white"
+          >
+            +
+          </Link>
+        )}
+
+        <div
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/10 text-sm font-semibold text-accent"
+          title={user.email}
         >
-          +
-        </Link>
-      )}
+          {emailInitial}
+        </div>
+      </div>
     </>
   );
 
