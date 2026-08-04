@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { parseRestaurantForm } from "@/lib/restaurant-form";
+import { summarizeMemo } from "@/app/actions/ai";
 
 export type RestaurantFormState = { error?: string };
 
@@ -29,11 +30,17 @@ export async function createRestaurant(
     return { error: parsed.error };
   }
 
+  // 목록 카드용 한 줄 요약을 미리 만들어둔다. AI 호출이 실패해도 저장은 계속 진행한다.
+  const memoSummary = parsed.value.memo
+    ? await summarizeMemo(parsed.value.memo)
+    : null;
+
   const { error } = await supabase.from("restaurants").insert({
     name: parsed.value.name,
     category: parsed.value.category,
     address: parsed.value.address,
     memo: parsed.value.memo,
+    memo_summary: memoSummary,
     visited: parsed.value.visited,
     visited_at: parsed.value.visitedAt,
     rating: parsed.value.rating,
@@ -75,6 +82,11 @@ export async function updateRestaurant(
     return { error: parsed.error };
   }
 
+  // 메모가 바뀌었을 수 있으니 수정할 때도 요약을 새로 만든다.
+  const memoSummary = parsed.value.memo
+    ? await summarizeMemo(parsed.value.memo)
+    : null;
+
   // user_id는 애초에 수정 대상에 없다. RLS가 이 id의 소유자가 아니면 0행을 갱신한다.
   const { error } = await supabase
     .from("restaurants")
@@ -83,6 +95,7 @@ export async function updateRestaurant(
       category: parsed.value.category,
       address: parsed.value.address,
       memo: parsed.value.memo,
+      memo_summary: memoSummary,
       visited: parsed.value.visited,
       visited_at: parsed.value.visitedAt,
       rating: parsed.value.rating,

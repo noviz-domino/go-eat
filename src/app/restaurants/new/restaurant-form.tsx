@@ -103,7 +103,7 @@ export function NewRestaurantForm() {
           className={inputClass}
         />
         <span className="text-xs text-zinc-400">
-          영업시간, 현금 여부, 찾아가는 길처럼 검색해도 안 나오는 정보를 적어두세요
+          영업시간, 현금 여부, 찾아가는 길처럼 검색해도 안 나오는 정보를 적어두세요. 저장하면 목록 카드용 한 줄 요약을 AI가 자동으로 만들어줍니다.
         </span>
       </label>
 

@@ -189,8 +189,12 @@ export default async function Home({ searchParams }: Props) {
                   ? `${"★".repeat(restaurant.rating ?? 0)} · ${restaurant.visited_at ?? ""} 방문`
                   : "아직 안 가봄"}
               </p>
-              {restaurant.memo && (
-                <p className="mt-2 text-[13px] text-zinc-500">{restaurant.memo}</p>
+              {(restaurant.memo_summary || restaurant.memo) && (
+                <p className="mt-2 line-clamp-2 text-[13px] text-zinc-500">
+                  {restaurant.memo_summary ??
+                    // AI 요약이 아직 없는 예전 메모는 앞부분만 잘라서 보여준다.
+                    `${restaurant.memo!.slice(0, 40)}${restaurant.memo!.length > 40 ? "…" : ""}`}
+                </p>
               )}
             </Link>
           </li>

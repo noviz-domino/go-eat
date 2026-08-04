@@ -7,6 +7,7 @@ export type Restaurant = {
   visited: boolean;
   visited_at: string | null;
   memo: string | null;
+  memo_summary: string | null;
   user_id: string;
   created_at: string;
 };
