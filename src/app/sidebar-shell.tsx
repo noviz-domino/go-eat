@@ -16,7 +16,7 @@ export function SidebarShell({ full, collapsed, children }: Props) {
   return (
     <div>
       <aside
-        className={`mb-8 border-b border-zinc-100 pb-8 md:fixed md:inset-y-0 md:left-0 md:mb-0 md:flex md:flex-col md:overflow-y-auto md:border-b-0 md:border-r md:border-zinc-100 md:bg-white md:px-4 md:py-8 md:transition-[width] md:duration-150 ${
+        className={`mb-8 border-b border-zinc-200 pb-8 md:fixed md:inset-y-0 md:left-0 md:mb-0 md:flex md:flex-col md:overflow-y-auto md:border-b-0 md:border-r md:border-zinc-200 md:bg-white md:px-4 md:py-8 md:transition-[width] md:duration-150 ${
           isCollapsed ? "md:w-20" : "md:w-64"
         }`}
       >

@@ -34,8 +34,8 @@ export function SearchInput({ defaultValue }: Props) {
   }
 
   return (
-    <div className="relative">
-      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400">
+    <div className="relative min-w-0 flex-1">
+      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-zinc-400">
         🔍
       </span>
       <input
@@ -43,7 +43,7 @@ export function SearchInput({ defaultValue }: Props) {
         value={value}
         onChange={(e) => handleChange(e.target.value)}
         placeholder="가게 이름 검색"
-        className="w-full rounded-full border border-zinc-200 py-3 pl-11 pr-4 text-sm outline-none focus:border-zinc-400"
+        className="w-full rounded-full border border-zinc-200 bg-white py-2.5 pl-10 pr-4 text-sm leading-normal outline-none focus:border-zinc-400"
       />
     </div>
   );

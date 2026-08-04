@@ -90,32 +90,28 @@ export function RestaurantSidebar({
           </div>
 
           <CategoryFilter defaultValue={activeCategory} />
-        </div>
-      )}
 
-      <div className="mt-auto flex flex-col gap-4 border-t border-zinc-100 pt-4">
-        {allCount > 0 && (
           <Link
             href="/restaurants/new"
             className="block rounded-xl bg-accent py-3 text-center text-sm font-medium text-white"
           >
             + 맛집 등록
           </Link>
-        )}
-
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex min-w-0 items-center gap-2">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/10 text-sm font-semibold text-accent">
-              {emailInitial}
-            </div>
-            <p className="truncate text-sm text-zinc-500">{email}</p>
-          </div>
-          <form action={logout}>
-            <button className="shrink-0 text-sm text-zinc-500 underline">
-              로그아웃
-            </button>
-          </form>
         </div>
+      )}
+
+      <div className="mt-auto flex items-center justify-between gap-2 rounded-xl border border-zinc-200 bg-white p-3 shadow-sm">
+        <div className="flex min-w-0 items-center gap-2">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/10 text-sm font-semibold text-accent">
+            {emailInitial}
+          </div>
+          <p className="truncate text-sm text-zinc-500">{email}</p>
+        </div>
+        <form action={logout}>
+          <button className="shrink-0 text-sm text-zinc-500 underline">
+            로그아웃
+          </button>
+        </form>
       </div>
     </>
   );
@@ -145,11 +141,7 @@ export function RestaurantSidebar({
               {tab.icon}
             </Link>
           ))}
-        </div>
-      )}
 
-      <div className="mt-auto flex flex-col items-center gap-3 border-t border-zinc-100 pt-4">
-        {allCount > 0 && (
           <Link
             href="/restaurants/new"
             title="맛집 등록"
@@ -158,8 +150,10 @@ export function RestaurantSidebar({
           >
             +
           </Link>
-        )}
+        </div>
+      )}
 
+      <div className="mt-auto flex items-center justify-center rounded-xl border border-zinc-200 bg-white p-2 shadow-sm">
         <div
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/10 text-sm font-semibold text-accent"
           title={email ?? undefined}
