@@ -120,7 +120,7 @@ export default async function Home({ searchParams }: Props) {
             <p className="text-sm text-zinc-500">조건에 맞는 맛집이 없어요</p>
             <Link
               href="/"
-              className="mt-4 inline-block rounded-xl border border-zinc-200 px-4 py-2 text-sm font-medium"
+              className="mt-4 inline-block rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium"
             >
               필터 초기화
             </Link>

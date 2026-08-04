@@ -12,7 +12,7 @@ import { StarRating } from "@/components/star-rating";
 const initialState: RestaurantFormState = {};
 
 const inputClass =
-  "rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none focus:border-zinc-400";
+  "rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none focus:border-zinc-400";
 
 type Props = {
   restaurant: Restaurant;

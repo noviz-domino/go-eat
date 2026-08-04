@@ -58,10 +58,10 @@ export default async function RestaurantDetailPage({ params }: Props) {
           <img
             src={restaurant.photo_url}
             alt={restaurant.name}
-            className="aspect-[4/3] w-full rounded-2xl object-cover"
+            className="aspect-[4/3] w-full rounded-2xl border border-[#EAEAEA] object-cover shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
           />
         ) : (
-          <div className="flex aspect-[4/3] w-full items-center justify-center rounded-2xl bg-orange-50 text-6xl">
+          <div className="flex aspect-[4/3] w-full items-center justify-center rounded-2xl border border-[#EAEAEA] bg-orange-50 text-6xl shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
             {CATEGORY_ICONS[restaurant.category] ?? "🍽️"}
           </div>
         )}
@@ -108,7 +108,7 @@ export default async function RestaurantDetailPage({ params }: Props) {
             <input type="hidden" name="id" value={restaurant.id} />
             <button
               type="submit"
-              className="w-full rounded-xl border border-zinc-200 py-3 text-sm font-medium hover:bg-zinc-50"
+              className="w-full rounded-xl border border-zinc-200 bg-white py-3 text-sm font-medium hover:bg-zinc-50"
             >
               {restaurant.visited ? "방문 체크 해제" : "방문 체크"}
             </button>
@@ -117,7 +117,7 @@ export default async function RestaurantDetailPage({ params }: Props) {
           <div className="mt-3 flex gap-3">
             <Link
               href={`/restaurants/${restaurant.id}/edit`}
-              className="flex-1 rounded-xl border border-zinc-200 py-3 text-center text-sm font-medium hover:bg-zinc-50"
+              className="flex-1 rounded-xl border border-zinc-200 bg-white py-3 text-center text-sm font-medium hover:bg-zinc-50"
             >
               수정
             </Link>

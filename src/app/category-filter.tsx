@@ -26,7 +26,7 @@ export function CategoryFilter({ defaultValue }: Props) {
     <select
       defaultValue={defaultValue}
       onChange={(e) => handleChange(e.target.value)}
-      className="rounded-xl border border-zinc-200 px-4 py-2 text-sm"
+      className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm"
     >
       <option value="">카테고리 전체</option>
       {CATEGORIES.map((category) => (

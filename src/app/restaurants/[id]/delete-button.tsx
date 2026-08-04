@@ -19,7 +19,7 @@ export function DeleteButton({ id, action }: Props) {
       <input type="hidden" name="id" value={id} />
       <button
         type="submit"
-        className="w-full rounded-xl border border-red-200 py-3 text-sm font-medium text-red-600"
+        className="w-full rounded-xl border border-red-200 bg-red-50 py-3 text-sm font-medium text-red-600 hover:bg-red-100"
       >
         삭제
       </button>
